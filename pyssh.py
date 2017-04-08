@@ -19,7 +19,7 @@ def get_user(args):
         if len(user_host) == 2:
             return re.findall(r"[\w]+", user_host[0])[-1]
     except Exception:
-        pass
+        return ''
 
     return ''
 
@@ -29,9 +29,9 @@ def get_host(args):
         if len(user_host) == 2:
             return re.findall(r"[\w]+", user_host[1])[0]
     except Exception:
-        pass
+        return args[1]
 
-    return ''
+    return args[1]
 
 def get_arg(arguments, args, default = ''):
     for arg in args:
@@ -108,6 +108,7 @@ def new_host_config():
 
 user = get_user(args)
 host = get_host(args)
+print(host)
 key = get_arg(args, ['-i'])
 port = get_arg(args, ['-P', '-p'], '22')
 
