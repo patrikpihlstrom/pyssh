@@ -16,5 +16,22 @@ If the host was found, but some of the parameters differ, you'll be asked if you
 I recommend creating an alias
 	`alias ssh='python /path/to/pyssh.py'`
 
-I also recommend creating a backup of your ssh config 
+In order to save a host confi, just execute the ssh command as per usual.
+If the host isn't present in your ~/.ssh/config file, you'll be asked if you want to save the host to your config file.
+You will also be prompted for each of the arguments that you specified.
+What this means is, all you have to do is hit enter until you're either asked for authentication, or you've successfully logged in.
+
+Example:
+```
+$ ssh user@example -i key.rsa -p 123 -A
+Create host config? [y/n/N(Don't ask again for this host)][y]: 
+User[user]:
+Port[123]:
+IdentityFile[key.rsa]:
+HostName(ip/dns)[example]:
+Host(alias)[example]:
+ForwardAgent[Yes]:
+```
+
+I recommend storing a backup of your ssh config in case of nasty bugs.
 

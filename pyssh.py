@@ -32,6 +32,7 @@ def get_arg(arguments, args, default = ''):
             try:
                 return arguments[arguments.index(arg) + 1]
             except Exception:
+                return arg
                 pass
 
     return default
@@ -109,7 +110,7 @@ if not path.isfile(path.expanduser('~/.ssh/config')):
 config = get_host_config(host, open(path.expanduser('~/.ssh/config')))
 arguments = {}
 
-arguments['ForwardAgent'] = 'No'
+arguments['ForwardAgent'] = 'Yes' if '-A' == get_arg(args, ['-A']) else 'No'
 
 if port != '22':
     arguments['Port'] = port
