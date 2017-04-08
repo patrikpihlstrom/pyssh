@@ -3,6 +3,7 @@
 from __future__ import print_function
 import sys
 import fileinput
+import re
 from os import path
 from subprocess import call
 
@@ -13,16 +14,22 @@ if len(args) < 2:
     sys.exit()
 
 def get_user(args):
-    user_host = args[1].split("@")
-    if len(user_host) == 2:
-        return user_host[0]
+    try:
+        user_host = str(args).split("@")
+        if len(user_host) == 2:
+            return re.findall(r"[\w]+", user_host[0])[-1]
+    except Exception:
+        pass
 
     return ''
 
 def get_host(args):
-    user_host = args[1].split("@")
-    if len(user_host) == 2:
-        return user_host[1]
+    try:
+        user_host = str(args).split("@")
+        if len(user_host) == 2:
+            return re.findall(r"[\w]+", user_host[1])[0]
+    except Exception:
+        pass
 
     return ''
 
@@ -46,7 +53,7 @@ def get_host_config(host, config):
         if 'Host ' in line:
             if found_host:
                 return host_config
-            elif 'Host ' + host in line:
+            elif line.rsplit(None, 1)[-1] == host:
                 host_config['Host'] = host
                 found_host = True
         elif found_host:
@@ -111,10 +118,7 @@ config = get_host_config(host, open(path.expanduser('~/.ssh/config')))
 arguments = {}
 
 arguments['ForwardAgent'] = 'Yes' if '-A' == get_arg(args, ['-A']) else 'No'
-
-if port != '22':
-    arguments['Port'] = port
-
+arguments['Port'] = port
 arguments['User'] = user
 
 if len(host) > 0:
