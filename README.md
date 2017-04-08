@@ -36,7 +36,7 @@ ForwardAgent[Yes]:
 *~/.ssh/config*
 ```
 Host example
-    IdentityFile key.rsa
+    IdentityFile ~/key.rsa
     HostName example
     User user
     ForwardAgent Yes
