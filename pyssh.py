@@ -127,7 +127,7 @@ else:
     arguments['Host'] = args[1]
 
 if len(key) > 0:
-    arguments['IdentityFile'] = key
+    arguments['IdentityFile'] = path.realpath(key)
 
 if not config:
     new_host_config()
