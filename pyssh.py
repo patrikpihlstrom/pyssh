@@ -166,5 +166,4 @@ elif should_update_host_config(key):
 ssh = args
 ssh[0] = 'ssh'
 call(ssh)
-sys.exit()
 
