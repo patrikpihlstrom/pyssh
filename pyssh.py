@@ -96,7 +96,7 @@ def new_host_config():
             arguments[arg] = raw_input(arg+'(alias)['+arguments[arg]+']:') or arguments[arg]
         elif arg == 'HostName':
             arguments[arg] = raw_input(arg+'(ip/dns)['+arguments[arg]+']:') or arguments[arg]
-        elif len(arguments[arg]) > 0:
+        else:
             arguments[arg] = raw_input(arg+'['+arguments[arg]+']:') or arguments[arg]
 
     with open(path.expanduser('~/.ssh/config'), 'a') as file:
@@ -120,6 +120,7 @@ arguments = {}
 arguments['ForwardAgent'] = 'Yes' if '-A' == get_arg(args, ['-A']) else 'No'
 arguments['Port'] = port
 arguments['User'] = user
+arguments['IdentityFile'] = ''
 
 if len(host) > 0:
     arguments['Host'] = host
