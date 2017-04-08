@@ -103,7 +103,7 @@ def new_host_config():
         file.write('\n')
         file.write('Host '+arguments['Host']+'\n')
         for arg in arguments.keys():
-            if (arg != 'Host'):
+            if arg != 'Host' and len(arguments[arg]) > 0:
                 file.write('    '+arg+' '+arguments[arg]+'\n')
 
 user = get_user(args)
