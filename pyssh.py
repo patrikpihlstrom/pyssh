@@ -108,7 +108,6 @@ def new_host_config():
 
 user = get_user(args)
 host = get_host(args)
-print(host)
 key = get_arg(args, ['-i'])
 port = get_arg(args, ['-P', '-p'], '22')
 
