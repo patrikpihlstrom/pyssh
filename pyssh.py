@@ -27,7 +27,7 @@ def get_host(args):
     try:
         user_host = str(args).split("@")
         if len(user_host) == 2:
-            return re.sub('\']', '', user_host[1].split(' ')[0])
+            return user_host[1].split(' ')[0].translate(None, '\'],')
     except Exception:
         return args[1]
 
