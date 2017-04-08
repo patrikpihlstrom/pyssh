@@ -59,10 +59,15 @@ def get_host_config(host, config):
     return host_config
 
 def get_host_blacklisted(host):
-    if any(host in line for line in open(path.expanduser('~/.pyssh')).readlines()):
+    if any(host in line for line in open(path.dirname(__file__)+'/blacklist').readlines()):
         return True
 
     return False
+
+def blacklist_host(host):
+    if not get_host_blacklisted:
+        with open(path.dirname(__file__)+'/blacklist', 'a') as blacklist:
+            blacklist.write(arguments['Host']+'\n')
 
 def should_update_host_config(key):
     if get_host_blacklisted(arguments['Host']):
@@ -71,20 +76,14 @@ def should_update_host_config(key):
     question = 'Update host config? [y/n/N(Don\'t ask again for this host)]: '
     answer = ''
     if len(key) > 0:
-        if 'IdentityFile' not in config or key != config['IdentityFile']:
-            print(question, end='')
-            answer = raw_input()
-
-    if answer == '':
-        if 'User' in arguments != config['User']:
+        if 'IdentityFile' not in config or key != config['IdentityFile'] or 'User' in arguments != config['User']:
             print(question, end='')
             answer = raw_input()
 
     if answer in ['y', 'Y']:
         return True
     elif answer == 'N':
-        with open(path.expanduser('~/.pyssh'), 'a') as blacklist:
-            blacklist.write(arguments['Host']+'\n')
+        blacklist_host(arguments['Host'])
 
     return False
 
@@ -111,11 +110,11 @@ def new_host_config():
     print('Create host config? [y/n/N(Don\'t ask again for this host)]: ', end='')
     answer = raw_input()
 
-    if answer not in ['y', 'Y']:
+    if answer == 'N':
+        blacklist_host(arguments['Host'])
         return False
-    elif answer == 'N':
-        with open(path.expanduser('~/.pyssh'), 'a') as blacklist:
-            blacklist.write(arguments['Host']+'\n')
+    elif answer not in ['y', 'Y']:
+        return False
 
     arguments['HostName'] = arguments['Host']
     for arg in sorted(arguments.keys(), reverse=True):
@@ -128,7 +127,7 @@ def new_host_config():
 
     with open(path.expanduser('~/.ssh/config'), 'a') as file:
         file.write('\n')
-        file.write(arg+' '+arguments['Host']+'\n')
+        file.write('Host '+arguments['Host']+'\n')
         for arg in arguments.keys():
             if (arg != 'Host'):
                 file.write('    '+arg+' '+arguments[arg]+'\n')
@@ -137,28 +136,27 @@ user = get_user(args)
 host = get_host(args)
 key = get_arg(args, ['-i'])
 port = get_arg(args, ['-P', '-p'], '22')
-forward_agent = get_arg(args, ['-A'])
+
+if not path.isfile(path.expanduser('~/.ssh/config')):
+        open(path.expanduser('~/.ssh/config'), 'a').close()
+
 config = get_host_config(host, open(path.expanduser('~/.ssh/config')))
 arguments = {}
 
-if len(user) > 0:
-    arguments['User'] = user
+arguments['ForwardAgent'] = 'Yes'
+arguments['IdentityFile'] = key
+
+if port != '22':
+    arguments['Port'] = port
+
+arguments['User'] = user
 
 if len(host) > 0:
     arguments['Host'] = host
 else:
     arguments['Host'] = args[1]
 
-if len(key) > 0:
-    arguments['IdentityFile'] = key
-
-if port != '22':
-    arguments['Port'] = port
-
-if forward_agent:
-    arguments['ForwardAgent'] = 'Yes'
-
-if not config and path.isfile(path.expanduser('~/.ssh/config')):# and len(key) > 0:
+if not config:
     new_host_config()
 elif should_update_host_config(key):
     update_host_config()
