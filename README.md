@@ -16,4 +16,5 @@ If the host was found, but some of the parameters differ, you'll be asked if you
 I recommend creating an alias
 	`alias ssh='python /path/to/pyssh.py'`
 
+I also recommend creating a backup of your ssh config 
 

@@ -69,14 +69,15 @@ def blacklist_host(host):
         with open(path.dirname(__file__)+'/blacklist', 'a') as blacklist:
             blacklist.write(arguments['Host']+'\n')
 
-def should_update_host_config(key):
+def should_update_host_config():
+    return False # TODO remove
     if get_host_blacklisted(arguments['Host']):
         return False
 
     question = 'Update host config? [y/n/N(Don\'t ask again for this host)]: '
     answer = ''
     if len(key) > 0:
-        if 'IdentityFile' not in config or key != config['IdentityFile'] or 'User' in arguments != config['User']:
+        if 'IdentityFile' not in config or key != config['IdentityFile'] or 'User' in arguments is not 'User' in config:
             print(question, end='')
             answer = raw_input()
 
@@ -90,18 +91,26 @@ def should_update_host_config(key):
 def update_host_config():
     found_host = False
 
-    for line in fileinput.input(path.expanduser('~/.ssh/config'), inplace=True):
-        if 'Host ' in line:
+    return False # TODO fix
+    with open(path.expanduser('~/.ssh/config'), 'r+') as file:
+        lines = file.readlines()
+        file.seek(0)
+        file.truncate()
+        for line in lines:
+            if 'Host ' in line:
+                if found_host:
+                    file.close()
+                    return True
+                elif 'Host ' + arguments['Host'] in line:
+                    found_host = True
+
             if found_host:
-                return True
-            elif 'Host ' + arguments['Host'] in line:
-                found_host = True
-        elif found_host:
-            print(line)
-            conf = line.split(' ')
-            if len(conf) >= 2 and conf[0] in arguments:
-                conf[1] = arguments[conf[0]]
-                line = ' '.join(conf)
+                lineArgs = filter(None, line.split(' '))
+                if len(lineArgs) >= 2 and lineArgs[1] is not lineArgs[0] in arguments:
+                    line = line.replace(lineArgs[1], arguments[lineArgs[0]]).rstrip()
+                    print(line.rstrip())
+
+            file.write(line)
 
 def new_host_config():
     if get_host_blacklisted(arguments['Host']):
@@ -158,7 +167,7 @@ else:
 
 if not config:
     new_host_config()
-elif should_update_host_config(key):
+elif should_update_host_config():
     update_host_config()
 
 ssh = args
