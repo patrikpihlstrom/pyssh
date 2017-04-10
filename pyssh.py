@@ -11,7 +11,7 @@ from pyssh import pyssh
 if any('--save' == x for x in sys.argv):
     pyssh = pyssh.Pyssh(sys.argv)
 
-    config = pyssh.get_host_config()
+    config = pyssh.get_host_in_config()
     if not config:
         pyssh.new_host_config()
 

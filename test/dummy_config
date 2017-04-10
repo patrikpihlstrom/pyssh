@@ -1,0 +1,6 @@
+Host some.host
+	User user
+	Port 22
+	HostName some.host
+	IdentityFile ~/some_key
+	ForwardAgent No

@@ -5,6 +5,7 @@ import sys
 import fileinput
 import re
 from os import path
+import os
 from optparse import OptionParser
 
 
@@ -32,32 +33,36 @@ def get_host(args):
 
     return args[1]
 
-def get_arg(arguments, inputs, defaultNo = False, defaultYes = True):
-    for _input in inputs:
-        if _input in arguments: # TODO: make work with both -ikey.rsa & -i key.rsa
-            try:
-                if arguments[arguments.index(_input) + 1][0] == _input:
-                    print(_input+':'+str(defaultYes))
-                    return defaultYes
-                elif arguments[arguments.index(arg) + 1][0] != '-':
-                    print(_input+':'+str(arguments[arguments.index(arg) + 1]))
-                    return arguments[arguments.index(arg) + 1]
-            except Exception:
-                pass
+def get_arg(argv, arg, user, host):
+    for _arg in argv:
+        if _arg not in [user, host]:
+            for __arg in arg['args']:
+                if _arg.startswith(__arg):
+                    if _arg == __arg:
+                        try:
+                            next_arg = argv[argv.index(_arg) + 1]
+                            if next_arg[0] != '-' and '@' not in next_arg:
+                                return next_arg
+                            else:
+                                return arg['defaultYes']
+                        except Exception:
+                                return arg['defaultYes']
 
-    print(str(inputs)+':'+str(defaultNo))
-    return defaultNo
+                    else:
+                        return _arg[len(__arg):]
+
+    return arg['defaultNo']
 
 class Pyssh:
     options = {}
     config_path = ''
     argv = ''
-    args = {
-            'IdentityFile': {'args': ['-i'], 'defaultNo': False, 'defaultYes': True},
-            'Port': {'args': ['-p', '-P'], 'defaultNo': '22', 'defaultYes': True},
-            'ForwardAgent': {'args': ['-A'], 'defaultNo': 'No', 'defaultYes': 'Yes'},
-            'save': {'args': ['--save'], 'defaultNo': False, 'defaultYes': True}
-            }
+    args = [
+            {'argument': 'IdentityFile', 'args': ['-i'], 'defaultNo': False, 'defaultYes': True},
+            {'argument': 'Port', 'args': ['-p', '-P'], 'defaultNo': '22', 'defaultYes': True},
+            {'argument': 'ForwardAgent', 'args': ['-A'], 'defaultNo': 'No', 'defaultYes': 'Yes'},
+            {'argument': 'save', 'args': ['--save'], 'defaultNo': False, 'defaultYes': True}
+            ]
 
     def __init__(self, argv, test = False):
         self.argv = argv
@@ -66,51 +71,33 @@ class Pyssh:
         self.options['User'] = get_user(argv)
         self.options['Host'] = get_host(argv)
 
-        parser = OptionParser()
-        for arg, vals in self.args.iteritems():
-            for _arg in vals['args']:
-                parser.add_option(_arg, dest=arg, default=vals['defaultNo'])
-
-        args = parser.parse_args()
-        print(args)
-
-        for arg, val in self.args.iteritems():
-            self.options[arg] = get_arg(argv, val['args'], val['defaultNo'], val['defaultYes'])
+        for arg in self.args:
+            self.options[arg['argument']] = get_arg(argv, arg, self.options['User'], self.options['Host'])
 
         if self.test:
-            self.config_path = path.dirname(__file__)+'/config'
+            self.config_path = os.getcwd()+'/config'
         else:
             self.config_path = path.expanduser('~/.ssh/config')
 
         if type(self.options['IdentityFile']) is str:
             self.options['IdentityFile'] = path.realpath(self.options['IdentityFile'])
 
-        print(self.options)
         if not path.isfile(self.config_path):
             open(self.config_path, 'a').close()
 
-    def get_host_config(self):
+    def get_host_in_config(self, host = ''):
+        if host == '':
+            host = self.options['Host']
+
         config = open(self.config_path)
         lines = [line.strip() for line in config.readlines()]
-        found_host = False
-        host_config = {}
 
         for line in lines:
             if 'Host ' in line:
-                if found_host:
-                    return host_config
-                elif line.rsplit(None, 1)[-1] == self.options['Host']:
-                    host_config['Host'] = self.options['Host']
-                    found_host = True
-            elif found_host:
-                conf = line.split(" ")
-                if len(conf) >= 2:
-                    host_config[conf[0]] = conf[1]
+                if line.rsplit(None, 1)[-1] == host:
+                    return True
 
-        if not found_host:
-            return False
-
-        return host_config
+        return False
 
     def new_host_config(self):
         # get options
