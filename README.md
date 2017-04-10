@@ -6,7 +6,7 @@ Save ssh host configs
 ### Features ###
 
 This script will scan your ssh config for the given host. 
-If the host wasn't found, you'll be asked if you would like to save the host and all of the parameters in your config.
+If the host wasn't found, you'll be asked if you would like to save the host and all of the arguments in your config.
 
 
 ### Usage ###
@@ -14,14 +14,13 @@ If the host wasn't found, you'll be asked if you would like to save the host and
 I recommend creating an alias
 	`alias ssh='python /path/to/pyssh.py'`
 
-In order to save a host confi, just execute the ssh command as per usual.
-If the host isn't present in your ~/.ssh/config file, you'll be asked if you want to save the host to your config file.
-You will also be prompted for each of the arguments that you specified.
-What this means is, all you have to do is hit enter until you're either asked for authentication, or you've successfully logged in.
+In order to save a host config, simply use the `--save` argument when invoking the ssh command.
+If the host isn't in your ~/.ssh/config file, you'll be asked if you want to add the host, as well as prompted for each of the arguments that you specified.
+Each argument's value will default to the value you initially specified.
 
 #### Example ####
 ```
-$ ssh user@example -i key.rsa -p 123 -A
+$ ssh user@example -i key.rsa -p 123 -A --save
 Create host config? [y/n/N(Don't ask again for this host)][y]: 
 User[user]:
 Port[123]:

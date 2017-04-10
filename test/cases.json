@@ -1,0 +1,76 @@
+{
+	"user": "user",
+	"host": "example.host",
+	"cases": [
+		{
+			"save": false,
+			"host_in_config": false,
+			"commands": ["ssh user@example.host"]
+		},
+		{
+			"save": true,
+			"host_in_config": false,
+			"IdentityFile": false,
+			"Port": "22",
+			"ForwardAgent": "No",
+			"commands": ["ssh user@example.host --save"]
+		},
+		{
+			"save": true,
+			"host_in_config": false,
+			"IdentityFile": false,
+			"Port": "123",
+			"ForwardAgent": "No",
+			"commands": [
+				"ssh user@example.host -p 123 --save",
+				"ssh user@example.host -p123 --save",
+				"ssh user@example.host -P 123 --save",
+				"ssh user@example.host -P123 --save",
+				"ssh -p 123 user@example.host --save",
+				"ssh -p123 user@example.host --save",
+				"ssh -P 123 user@example.host --save",
+				"ssh -P123 user@example.host --save"
+			]
+		},
+		{
+			"save": true,
+			"host_in_config": false,
+			"IdentityFile": "key.rsa",
+			"Port": "22",
+			"ForwardAgent": "No",
+			"commands": [
+				"ssh user@example.host -i key.rsa --save",
+				"ssh user@example.host -ikey.rsa --save",
+				"ssh -i key.rsa user@example.host --save",
+				"ssh -ikey.rsa user@example.host --save"
+			]
+		},
+		{
+			"save": true,
+			"host_in_config": false,
+			"IdentityFile": "key.rsa",
+			"Port": "22",
+			"ForwardAgent": "Yes",
+			"commands": [
+				"ssh user@example.host -A -i key.rsa --save",
+				"ssh user@example.host -ikey.rsa -A --save",
+				"ssh -i key.rsa -A user@example.host --save",
+				"ssh -A -ikey.rsa user@example.host --save"
+			]
+		},
+		{
+			"save": true,
+			"host": "some.host",
+			"host_in_config": true,
+			"IdentityFile": "some_key.rsa",
+			"Port": "22",
+			"ForwardAgent": "No",
+			"commands": [
+				"ssh user@some.host -i some_key.rsa --save",
+				"ssh user@some.host -isome_key.rsa --save",
+				"ssh -i some_key.rsa user@some.host --save",
+				"ssh -isome_key.rsa user@some.host --save"
+			]
+		}
+	]
+}
