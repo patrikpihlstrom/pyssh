@@ -5,7 +5,7 @@ import sys
 import fileinput
 import re
 from os import path
-import argparse
+from optparse import OptionParser
 
 
 def get_user(args):
@@ -54,7 +54,7 @@ class Pyssh:
     argv = ''
     args = {
             'IdentityFile': {'args': ['-i'], 'defaultNo': False, 'defaultYes': True},
-            'Port': {'args': ['-P', '-p-'], 'defaultNo': '22', 'defaultYes': True},
+            'Port': {'args': ['-p', '-P'], 'defaultNo': '22', 'defaultYes': True},
             'ForwardAgent': {'args': ['-A'], 'defaultNo': 'No', 'defaultYes': 'Yes'},
             'save': {'args': ['--save'], 'defaultNo': False, 'defaultYes': True}
             }
@@ -66,13 +66,13 @@ class Pyssh:
         self.options['User'] = get_user(argv)
         self.options['Host'] = get_host(argv)
 
-
-        parser = argparse.ArgumentParser()
+        parser = OptionParser()
         for arg, vals in self.args.iteritems():
-            parser.add_argument(vals['args'], default=vals['defaultNo'])
+            for _arg in vals['args']:
+                parser.add_option(_arg, dest=arg, default=vals['defaultNo'])
 
         args = parser.parse_args()
-        print(args.IdentityFile)
+        print(args)
 
         for arg, val in self.args.iteritems():
             self.options[arg] = get_arg(argv, val['args'], val['defaultNo'], val['defaultYes'])
