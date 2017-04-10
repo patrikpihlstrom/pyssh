@@ -59,7 +59,7 @@ class Pyssh:
     argv = ''
     args = [
             {'argument': 'IdentityFile', 'args': ['-i'], 'defaultNo': False, 'defaultYes': True},
-            {'argument': 'Port', 'args': ['-p', '-P'], 'defaultNo': '22', 'defaultYes': True},
+            {'argument': 'Port', 'args': ['-p', '-P'], 'defaultNo': '22', 'defaultYes': '22'},
             {'argument': 'ForwardAgent', 'args': ['-A'], 'defaultNo': 'No', 'defaultYes': 'Yes'},
             {'argument': 'save', 'args': ['--save'], 'defaultNo': False, 'defaultYes': True}
             ]
@@ -115,6 +115,6 @@ class Pyssh:
             file.write('\n')
             file.write('Host '+self.options['Host']+'\n')
             for arg in self.options.keys():
-                if arg != 'Host' and self.options[arg] != False:
+                if arg not in ['Host', 'save'] and self.options[arg] != False:
                     file.write('    '+arg+' '+self.options[arg]+'\n')
 
