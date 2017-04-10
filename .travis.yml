@@ -1,0 +1,8 @@
+language: python
+install:
+        - pip install .
+        - pip install shlex
+        - pip install json
+        - pip install shutil
+script:
+        test/test
