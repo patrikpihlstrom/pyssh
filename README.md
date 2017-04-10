@@ -21,7 +21,6 @@ Each argument's value will default to the value you initially specified.
 #### Example ####
 ```
 $ ssh user@example -i key.rsa -p 123 -A --save
-Create host config? [y/n/N(Don't ask again for this host)][y]: 
 User[user]:
 Port[123]:
 IdentityFile[key.rsa]:
