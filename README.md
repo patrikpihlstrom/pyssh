@@ -10,8 +10,7 @@ If the host wasn't found, you'll be asked if you would like to save the host and
 
 ### Usage ###
 
-I recommend creating an alias
-	`alias ssh='python /path/to/pyssh.py'`
+I recommend creating an alias `alias ssh='python /path/to/pyssh.py'`
 
 In order to save a host config, simply use the `--save` argument when invoking the ssh command.
 If the host isn't in your ~/.ssh/config file, you'll be asked if you want to add the host, as well as prompted for each of the arguments that you specified.
@@ -27,7 +26,6 @@ HostName(ip/dns)[example]:
 Host(alias)[example]:
 ForwardAgent[Yes]:
 ```
-
 *~/.ssh/config*
 ```
 Host example
@@ -37,6 +35,4 @@ Host example
     ForwardAgent Yes
     Port 123
 ```
-
-I recommend storing a backup of your ssh config in case of nasty bugs.
-
+*You should propably store a backup of your ssh config in case of nasty bugs...*
