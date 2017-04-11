@@ -1,6 +1,5 @@
 # PYSSH #
-
-Save ssh host configs
+[![Build Status](https://travis-ci.org/patrikpihlstrom/pyssh.svg?branch=master)](https://travis-ci.org/patrikpihlstrom/pyssh)
 
 
 ### Features ###
